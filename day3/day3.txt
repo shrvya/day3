@@ -1,0 +1,164 @@
+1)print last 4 frequent access urls count in sorted order from /var/log/httpd/access.log
+ cat access.txt | awk '{print $11}' |sort |uniq -c|head -4
+
+2)get user info from /etc/passwd and change ownership of users home directory
+ cat passwd | awk -F: '{print $1}'
+cat passwd | awk -F: '$3>1000 {print $3}'
+ cat passwd | awk -F: '{print $6 $7}
+ cat passwd | grep home
+
+
+3)print list of 10 unique sorted client ip address from access.log
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ cat access.txt |awk '{print $1}'|sort |uniq -c | head -10
+
+4)execute "hello" and "ls" and check its execution status and print whether execution is succesfull or not
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ echo HELLO
+HELLO
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ if [ ` echo $?== 0 ` ]
+> then
+> echo "successful"
+> else
+> echo "unsucessful"
+> fi
+0==0
+successful
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ ls
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ if [ ` echo $?== 0 ` ]
+> then
+> echo "successfull"
+> else
+> echo "unsuccesfull"
+> fi
+0==0
+successfull
+
+5)find a word "Systemd"
+shrivya@DESKTOP-M2GIS2E:/var/log$ grep -rc 'systemd' .
+
+6)check if a folder exists
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ if (find ~ checkfol | grep -c checkfol) > 0; then echo exist; else mkdir checkfol; fi
+
+7)print list of 4 frequently access uniq urls at particulars from /var/log/httpd/access.log
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ cat access.txt | awk '{print $11}' |sort |uniq -c |tail -4
+
+8)print list of web responses code count in unique sorted order
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ cat access.txt | awk '{print $9}' |sort |uniq -c
+
+   3176 200
+      8 206
+     26 304
+
+9)move files from one folder to other
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ touch abc.txt
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ touch def.txt,ghi.txt,jkl.txt
+#!/bin/bash
+for file in 'ls *.txt'
+do 
+             echo $file
+             bname=`echo $file |awk -F . '{print $!}'`
+             ext=`echo $file |awk -F. '{print $2}'`
+             mkdir $bname
+             mv $file $bname
+done
+
+
+10)append current date to all log files
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ touch abc.log.1,def.log.1,ghi.log.1,jkl.log.1 ,mno.log.1
+#!/bin/bash
+for file in 'ls *.log.1'
+do 
+             echo $file
+             fname=`echo $file |awk -F . '{print $!}'`
+             sname=`echo $file |awk -F. '{print $2}'`
+             date=`date +%d%m%Y`
+             filename=`echo $fname-$date.$sname`
+             mv $file $filename
+             mv $filename
+done
+
+11)archieve the files from /var/log folder which are modified 7 days ago
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ mkdir backup
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ nano backup.sh
+
+#!/bin/bash
+backup=~/backup;
+for file in `find /var/log/ -mtime +7`
+do
+    echo $file
+    sudo mv $file $backup
+done
+
+
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ sh backup.sh
+/var/log/btmp
+[sudo] password for shrivya:
+/var/log/dist-upgrade
+mv: cannot overwrite non-directory '/home/shrivya/backup' with directory '/var/log/dist-upgrade'
+/var/log/journal
+mv: cannot overwrite non-directory '/home/shrivya/backup' with directory '/var/log/journal'
+/var/log/landscape
+mv: cannot overwrite non-directory '/home/shrivya/backup' with directory '/var/log/landscape'
+/var/log/lxd
+mv: cannot overwrite non-directory '/home/shrivya/backup' with directory '/var/log/lxd'
+/var/log/unattended-upgrades
+mv: cannot overwrite non-directory '/home/shrivya/backup' with directory '/var/log/unattended-upgrades'
+/var/log/wtmp
+
+
+12)create process list table for pid
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ ps -efo pid,ppid,cmd,%mem,%cpu
+  PID  PPID CMD                         %MEM %CPU
+  495   494 -bash HOSTTYPE=x86_64 LANG=  0.0  0.0
+  630   495  \_ cat access.txt LS_COLOR  0.0  0.0
+  631   495  \_ find -atime +100 LS_COL  0.0  0.0
+  632   495  \_ cat access.txt LS_COLOR  0.0  0.0
+  633   495  \_ find -mtime +07 LS_COLO  0.0  0.0
+  635   495  \_ cat access.txt LS_COLOR  0.0  0.0
+  636   495  \_ find . -type f -mtime +  0.0  0.0
+  637   495  \_ cat access.txt LS_COLOR  0.0  0.0
+  638   495  \_ awk {print $11} LS_COLO  0.0  0.0
+  639   495  \_ find -type f -mtime +07  0.0  0.0
+  642   495  \_ cat access.txt LS_COLOR  0.0  0.0
+  643   495  \_ awk {print $11} LS_COLO  0.0  0.0
+  644   495  \_ find -mtime +07 LS_COLO  0.0  0.0
+  645   495  \_ cat access.txt LS_COLOR  0.0  0.0
+  646   495  \_ awk {print $11} LS_COLO  0.0  0.0
+  647   495  \_ find -mtime +40 LS_COLO  0.0  0.0
+  757   495  \_ ps -efo pid,ppid,cmd,%m  0.0  0.0
+
+13)data analysis
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ cat data.txt |awk '$4>10000 {print $2" " $7}'
+EmployeeName TotalPay
+NATHANIEL 567595
+GARY 538909
+ALBERT 335279
+CHRISTOPHER 332343
+PATRICK 326373
+DAVID 316285
+ALSON 315981
+DAVID 307899
+JOANNE 302377
+PATRICIA 297608
+EDWARD 294580
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ cat data.txt |grep CAPTAIN |awk '{sum+=$7}END {print sum}'
+1171796
+
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ cat data.txt |awk '{7000<$5 && $5<10000}{print $3 " " $5}'
+
+
+shrivya@DESKTOP-M2GIS2E:/mnt/c$ cat data.txt |awk '{sum+=$4} END {print sum/NR}'
+
+14)find difference between original file and updated file
+
+
+15)set environment usersecret="dH34xJaa23" if not set
+shrivya@DESKTOP-M2GIS2E:/mnt/c/Users/Shrivya Shetty$ [ -z $usersecret ] && export usersecret="dH34xJaa23" || echo "already set "
+already set
